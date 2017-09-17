@@ -1,0 +1,71 @@
+## MAIN BUILD
+
+- name: Install Git
+  apt:
+    package: git
+
+- name: Install Stepmania build dependencies
+  apt:
+    package: cmake,build-essential,mesa-common-dev,libglu1-mesa-dev,libglew1.5-dev,libxtst-dev,libxrandr-dev,libpng-dev,libjpeg-dev,zlib1g-dev,libbz2-dev,libogg-dev,libvorbis-dev,libc6-dev,yasm,libasound-dev,libpulse-dev,binutils-dev,libgtk2.0-dev,libmad0-dev,libudev-dev,libva-dev
+
+- name: Fetch Stepmania source
+  git:
+    repo: https://github.com/Kauhsa/stepmania
+    dest: /stepmania
+    version: sync-start
+  register: source
+
+# -DWITH_MINIMAID=OFF required so we don't get a complain about -fPIC,
+# see https://github.com/stepmania/stepmania/issues/1352
+- name: Run CMake
+  shell: cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=Release .. -DWITH_MINIMAID=OFF && cmake .. -DWITH_MINIMAID=OFF
+  args:
+    chdir: /stepmania/Build
+  when: source.changed
+
+- name: Compile Stepmania
+  shell: make -j$(nproc --all)
+  args:
+    chdir: /stepmania/Build
+  when: source.changed
+
+## STARTUP SCRIPT
+
+- name: Copy startup script
+  copy:
+    src: files/start.sh
+    dest: /home/stepmania/start-stepmania.sh
+    mode: 0755
+
+## THEME
+
+- name: Make sure theme directory exists
+  file:
+    path: /home/stepmania/.stepmania-5.0/Themes
+    state: directory
+    owner: stepmania
+    group: stepmania
+    recurse: yes
+
+- name: Get Simply Love, McKylä edition
+  git:
+    repo: https://github.com/Kauhsa/Simply-Love-SM5
+    dest: /home/stepmania/.stepmania-5.0/Themes/Simply-Love-SM5
+    version: makkyla
+  become_user: stepmania
+
+## ICONS
+
+- name: Add Stepmania icon to desktop
+  copy:
+    src: files/stepmania.desktop
+    dest: /home/stepmania/Desktop/stepmania.desktop
+    mode: 0755
+    owner: stepmania
+    group: stepmania
+
+- name: Add link to Songs to Desktop
+  file:
+    src: /home/stepmania/.stepmania-5.0/Songs
+    dest: /home/stepmania/Desktop/Songs
+    state: link

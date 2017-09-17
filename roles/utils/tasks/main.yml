@@ -1,0 +1,9 @@
+- name: Install utility packages
+  apt:
+    package: sudo,chromium,vim,htop
+
+- name: Make sure user stepmania is in sudo group
+  user:
+    name: stepmania
+    groups: sudo
+    append: yes
