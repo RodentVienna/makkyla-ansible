@@ -29,14 +29,6 @@
     chdir: /stepmania/Build
   when: source.changed
 
-## STARTUP SCRIPT
-
-- name: Copy startup script
-  copy:
-    src: files/start.sh
-    dest: /home/stepmania/start-stepmania.sh
-    mode: 0755
-
 ## THEME
 
 - name: Make sure theme directory exists
@@ -54,7 +46,13 @@
     version: makkyla
   become_user: stepmania
 
-## ICONS
+## STARTUP AND DESKTOP ICONS
+
+- name: Copy startup script
+  copy:
+    src: files/start.sh
+    dest: /home/stepmania/start-stepmania.sh
+    mode: 0755
 
 - name: Add Stepmania icon to desktop
   copy:
@@ -68,4 +66,17 @@
   file:
     src: /home/stepmania/.stepmania-5.0/Songs
     dest: /home/stepmania/Desktop/Songs
+    state: link
+
+- name: Make sure autostart directory exists
+  file:
+    path: /home/stepmania/.config/autostart
+    state: directory
+    owner: stepmania
+    group: stepmania
+
+- name: Run Stepmania on startup
+  file:
+    src: /home/stepmania/Desktop/stepmania.desktop
+    dest: /home/stepmania/.config/autostart/stepmania.desktop
     state: link
