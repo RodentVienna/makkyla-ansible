@@ -19,3 +19,13 @@
     name: apt-daily.timer
     enabled: no
     state: stopped
+
+- name: Remove light-locker from autostart
+  file:
+    path: /etc/xdg/autostart/light-locker.desktop
+    state: absent
+
+- name: Remove xscreensaver from autostart
+  file:
+    path: /etc/xdg/autostart/xscreensaver.desktop
+    state: absent
