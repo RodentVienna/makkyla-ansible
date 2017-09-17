@@ -7,3 +7,15 @@
     name: stepmania
     groups: sudo
     append: yes
+
+- name: Disable apt-daily-service.timer
+  systemd:
+    name: apt-daily-upgrade.timer
+    enabled: no
+    state: stopped
+
+- name: Disable apt-daily.timer
+  systemd:
+    name: apt-daily.timer
+    enabled: no
+    state: stopped
