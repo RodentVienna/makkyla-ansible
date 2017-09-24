@@ -1,12 +1,20 @@
 - name: Install utility packages
   apt:
-    package: sudo,chromium,vim,htop
+    package: sudo,chromium,vim,htop,net-tools,gedit
 
 - name: Make sure user stepmania is in sudo group
   user:
     name: stepmania
     groups: sudo
     append: yes
+
+- name: Enable passwordless sudo for stepmania
+  lineinfile:
+    path: /etc/sudoers
+    line: 'stepmania ALL=(ALL) NOPASSWD:ALL'
+    regexp: '^stepmania'
+    validate: '/usr/sbin/visudo -cf %s'
+    insertbefore: '^root ' 
 
 - name: Disable apt-daily-service.timer
   systemd:
@@ -20,12 +28,38 @@
     enabled: no
     state: stopped
 
+- name: Autostart script for disabling sleep
+  copy:
+    src: files/disable-sleep-on-monitor.sh
+    dest: /home/stepmania/disable-sleep-on-monitor.sh
+    owner: stepmania
+    group: stepmania
+    mode: 0755
+
+- name: Add disabling sleep to autostart
+  copy:
+    src: files/disable-sleep-on-monitor.desktop
+    dest: /home/stepmania/.config/autostart/disable-sleep-on-monitor.desktop
+    owner: stepmania
+    group: stepmania
+
 - name: Remove light-locker from autostart
-  file:
-    path: /etc/xdg/autostart/light-locker.desktop
-    state: absent
+  copy:
+    src: files/disabled-autostart.desktop
+    dest: /home/stepmania/.config/autostart/light-locker.desktop
+    owner: stepmania
+    group: stepmania
 
 - name: Remove xscreensaver from autostart
-  file:
-    path: /etc/xdg/autostart/xscreensaver.desktop
-    state: absent
+  copy:
+    src: files/disabled-autostart.desktop
+    dest: /home/stepmania/.config/autostart/xscreensaver.desktop
+    owner: stepmania
+    group: stepmania
+
+- name: Remove xfce4-power-manager from autostart
+  copy:
+    src: files/disabled-autostart.desktop
+    dest: /home/stepmania/.config/autostart/xfce4-power-manager.desktop
+    owner: stepmania
+    group: stepmania

@@ -1,7 +1,10 @@
 - hosts: all
   become: true
   roles:
+    - utils
     - lightdm
     - piuio
+    - gcc
     - stepmania
-    - utils
+    - graphics
+    - ssh

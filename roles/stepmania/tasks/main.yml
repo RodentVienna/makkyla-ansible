@@ -18,7 +18,7 @@
 # -DWITH_MINIMAID=OFF required so we don't get a complain about -fPIC,
 # see https://github.com/stepmania/stepmania/issues/1352
 - name: Run CMake
-  shell: cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=Release .. -DWITH_MINIMAID=OFF && cmake .. -DWITH_MINIMAID=OFF
+  shell: CC=/usr/bin/gcc-5 CXX=/usr/bin/g++-5 cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=Release .. -DWITH_MINIMAID=OFF && CC=/usr/bin/gcc-5 CXX=/usr/bin/g++-5 cmake .. -DWITH_MINIMAID=OFF
   args:
     chdir: /stepmania/Build
   when: source.changed
@@ -29,7 +29,7 @@
     chdir: /stepmania/Build
   when: source.changed
 
-## THEME
+## THEME AND CONFIGURATION
 
 - name: Make sure theme directory exists
   file:
@@ -45,6 +45,98 @@
     dest: /home/stepmania/.stepmania-5.0/Themes/Simply-Love-SM5
     version: makkyla
   become_user: stepmania
+
+- name: Make sure Save directory exists
+  file:
+    path: /home/stepmania/.stepmania-5.0/Save
+    state: directory
+    owner: stepmania
+    group: stepmania
+
+- name: Install Keymaps.ini file
+  copy:
+    src: files/Keymaps.ini
+    dest: /home/stepmania/.stepmania-5.0/Save/Keymaps.ini
+    owner: stepmania
+    group: stepmania
+
+- name: Add empty Preferences.ini if does not exist
+  copy:
+    content: '[Options]\n\n[Game-dance]\n\n'
+    dest: /home/stepmania/.stepmania-5.0/Save/Preferences.ini
+    force: no
+    owner: stepmania
+    group: stepmania
+
+- name: Set basic preferences
+  lineinfile:
+    path: /home/stepmania/.stepmania-5.0/Save/Preferences.ini
+    line: '{{ item.key }}={{ item.value }}'
+    insertafter: '\[Options\]'
+    regexp: '^{{ item.key }}'
+  with_items:
+    - key: Windowed
+      value: 0
+    - key: SoundDrivers
+      value: alsa-sw
+    - key: SoundDevice
+      value: hw:CARD=Audio,DEV=0
+    - key: LightsDriver
+      value: PIUIO_Leds
+    - key: Theme
+      value: Simply-Love-SM5
+    - key: DisplayWidth
+      value: 1920
+    - key: DisplayHeight
+      value: 1080
+    - key: DisplayAspectRatio
+      value: 1.777778
+    - key: ArcadeOptionsNavigation
+      value: 1
+    - key: OnlyDedicatedMenuButtons
+      value: 1
+
+- name: Add empty ThemePrefs.ini if does not exist
+  copy:
+    content: '[SimplyLove]\n\n'
+    dest: /home/stepmania/.stepmania-5.0/Save/ThemePrefs.ini
+    force: no
+    owner: stepmania
+    group: stepmania
+
+- name: Set some theme preferences
+  lineinfile:
+    path: /home/stepmania/.stepmania-5.0/Save/ThemePrefs.ini
+    line: '{{ item.key }}={{ item.value }}'
+    insertafter: '\[Simply Love\]'
+    regexp: '^{{ item.key }}'
+  with_items:
+    - key: VisualTheme
+      value: Arrows
+    - key: HideStockNoteSkins
+      value: 'true'
+    - key: TimingWindowAdd
+      value: '0.0015'
+
+- name: Replace all instances of theme
+  replace:
+    path: /home/stepmania/.stepmania-5.0/Save/Preferences.ini
+    replace: 'Theme=Simply-Love-SM5'
+    regexp: '^Theme=(.*)'
+
+- name: Make sure noteskins directory exists
+  file:
+    path: /home/stepmania/.stepmania-5.0/NoteSkins/dance
+    state: directory
+    owner: stepmania
+    group: stepmania
+    recurse: yes
+
+- name: Install noteskins
+  synchronize:
+    src: files/noteskins/
+    dest: /home/stepmania/.stepmania-5.0/NoteSkins/dance
+    use_ssh_args: yes
 
 ## STARTUP AND DESKTOP ICONS
 
@@ -67,6 +159,21 @@
     src: /home/stepmania/.stepmania-5.0/Songs
     dest: /home/stepmania/Desktop/Songs
     state: link
+    force: yes
+
+- name: Add link to Courses to Desktop
+  file:
+    src: /home/stepmania/.stepmania-5.0/Courses
+    dest: /home/stepmania/Desktop/Courses
+    state: link
+    force: yes
+
+- name: Add link to Save to Desktop
+  file:
+    src: /home/stepmania/.stepmania-5.0/Save
+    dest: /home/stepmania/Desktop/Save
+    state: link
+    force: yes
 
 - name: Make sure autostart directory exists
   file:
@@ -75,8 +182,8 @@
     owner: stepmania
     group: stepmania
 
-- name: Run Stepmania on startup
-  file:
-    src: /home/stepmania/Desktop/stepmania.desktop
-    dest: /home/stepmania/.config/autostart/stepmania.desktop
-    state: link
+#- name: Run Stepmania on startup
+#  file:
+#    src: /home/stepmania/Desktop/stepmania.desktop
+#    dest: /home/stepmania/.config/autostart/stepmania.desktop
+#    state: link

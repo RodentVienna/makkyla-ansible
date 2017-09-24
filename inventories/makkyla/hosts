@@ -1,0 +1,5 @@
+[dedicab]
+192.168.11.41
+
+[dedicab:vars]
+ansible_user=stepmania

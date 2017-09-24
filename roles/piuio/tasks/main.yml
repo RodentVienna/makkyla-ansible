@@ -1,8 +1,8 @@
 - set_fact: PIUIO_VERSION=v1.0
 
-- name: Install DKMS
+- name: Install DKMS and other dependencies
   apt:
-    package: dkms
+    package: dkms,git,build-essential
 
 - name: Get source
   git: 

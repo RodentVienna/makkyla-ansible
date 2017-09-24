@@ -1,0 +1,45 @@
+- name: Install sshguard
+  apt:
+    package: sshguard
+
+- name: Add local network to whitelist
+  lineinfile:
+    path: '/etc/sshguard/whitelist'
+    line: '192.168.0.0/16'
+
+- name: Start and enable sshguard
+  systemd:
+    service: sshguard
+    state: started
+    enabled: yes
+
+- name: Set authorized keys
+  authorized_key:
+    user: stepmania
+    key: '{{ item }}'
+  with_items:
+    - https://github.com/Kauhsa.keys
+
+- name: Disable password authentication
+  lineinfile:
+    path: '/etc/ssh/sshd_config'
+    line: 'PasswordAuthentication no'
+    regexp: '^PasswordAuthentication'
+  notify:
+    - restart sshd
+
+- name: Add match block for internal networks
+  lineinfile:
+    path: '/etc/ssh/sshd_config'
+    line: 'Match Address 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16'
+    insertafter: 'EOF'
+  notify:
+    - restart sshd
+
+- name: Add password authentication from internal network
+  lineinfile:
+    path: '/etc/ssh/sshd_config'
+    line: '   PasswordAuthentication yes'
+    insertafter: 'Match Address 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16'
+  notify:
+    - restart sshd

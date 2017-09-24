@@ -1,0 +1,18 @@
+- name: Enable apt-pinning
+  copy:
+    src: files/use-unstable
+    dest: /etc/apt/preferences.d/use-unstable
+
+- name: Enable testing repository
+  apt_repository:
+    repo: deb http://ftp.fi.debian.org/debian/ testing main
+
+- name: Enable unstable repository
+  apt_repository:
+    repo: deb http://ftp.fi.debian.org/debian/ unstable main
+
+- name: Install gcc-5
+  apt:
+    package: gcc-5,g++-5,binutils,binutils-dev,cpp-5,gcc-5-base,libgcc-5-dev
+    update_cache: yes
+    default_release: unstable
