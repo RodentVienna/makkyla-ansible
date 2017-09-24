@@ -19,6 +19,7 @@
     key: '{{ item }}'
   with_items:
     - https://github.com/Kauhsa.keys
+    - https://github.com/Alhetus.keys
 
 - name: Disable password authentication
   lineinfile:
