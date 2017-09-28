@@ -95,6 +95,10 @@
       value: 1
     - key: OnlyDedicatedMenuButtons
       value: 1
+    - key: BGBrightness
+      value: 0.200000
+    - key: ShowNativeLanguage
+      value: 0
 
 - name: Add empty ThemePrefs.ini if does not exist
   copy:
