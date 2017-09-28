@@ -144,6 +144,10 @@
 
 ## STARTUP AND DESKTOP ICONS
 
+- name: Install unclutter for hiding cursor
+  apt:
+    package: unclutter
+
 - name: Copy startup script
   copy:
     src: files/start.sh
