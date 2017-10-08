@@ -102,7 +102,7 @@
 
 - name: Add empty ThemePrefs.ini if does not exist
   copy:
-    content: '[SimplyLove]\n\n'
+    content: '[Simply Love]\n\n'
     dest: /home/stepmania/.stepmania-5.0/Save/ThemePrefs.ini
     force: no
     owner: stepmania
@@ -121,6 +121,8 @@
       value: 'true'
     - key: TimingWindowAdd
       value: '0.0015'
+    - key: AllowScreenSelectProfile
+      value: true
 
 - name: Replace all instances of theme
   replace:
