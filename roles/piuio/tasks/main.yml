@@ -2,7 +2,7 @@
 
 - name: Install DKMS and other dependencies
   apt:
-    package: dkms,git,build-essential
+    package: "dkms,git,build-essential,linux-headers-{{ ansible_kernel }}"
 
 - name: Get source
   git: 
