@@ -28,25 +28,10 @@
     enabled: no
     state: stopped
 
-- name: Autostart script for disabling sleep
-  copy:
-    src: files/disable-sleep-on-monitor.sh
-    dest: /home/stepmania/disable-sleep-on-monitor.sh
-    owner: stepmania
-    group: stepmania
-    mode: 0755
-
-- name: Make sure .config folder exists
+- name: Make sure .config/autostart folder exists
   file:
     path: /home/stepmania/.config/autostart
     state: directory
-    owner: stepmania
-    group: stepmania
-
-- name: Add disabling sleep to autostart
-  copy:
-    src: files/disable-sleep-on-monitor.desktop
-    dest: /home/stepmania/.config/autostart/disable-sleep-on-monitor.desktop
     owner: stepmania
     group: stepmania
 

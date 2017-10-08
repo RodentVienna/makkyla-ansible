@@ -1,6 +1,0 @@
-[Desktop Entry]
-Type=Application
-Version=1.0
-Name=Disable sleep
-Path=/home/stepmania
-Exec=/home/stepmania/disable-sleep-on-monitor.sh
