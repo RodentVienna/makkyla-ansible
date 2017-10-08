@@ -16,6 +16,7 @@ unclutter -idle 1 -root &
 
 pasuspender /stepmania/stepmania
 
-# wait until enter is pressed
-read -p "Press enter to continue"
-
+if [[ $? -ne 0 ]]; then
+  # wait until enter is pressed
+  read -p "Press enter to continue"
+fi
