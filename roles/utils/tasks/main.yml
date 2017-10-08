@@ -36,6 +36,13 @@
     group: stepmania
     mode: 0755
 
+- name: Make sure .config folder exists
+  file:
+    path: /home/stepmania/.config/autostart
+    state: directory
+    owner: stepmania
+    group: stepmania
+
 - name: Add disabling sleep to autostart
   copy:
     src: files/disable-sleep-on-monitor.desktop
