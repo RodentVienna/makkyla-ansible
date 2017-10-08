@@ -62,7 +62,9 @@
 
 - name: Add empty Preferences.ini if does not exist
   copy:
-    content: '[Options]\n\n[Game-dance]\n\n'
+    content: |
+      [Options]
+      [Game-dance]
     dest: /home/stepmania/.stepmania-5.0/Save/Preferences.ini
     force: no
     owner: stepmania
@@ -90,19 +92,26 @@
     - key: DisplayHeight
       value: 1080
     - key: DisplayAspectRatio
-      value: 1.777778
+      value: '1.777778'
     - key: ArcadeOptionsNavigation
       value: 1
     - key: OnlyDedicatedMenuButtons
       value: 1
     - key: BGBrightness
-      value: 0.200000
+      value: '0.200000'
     - key: ShowNativeLanguage
       value: 0
 
+- name: Replace all instances of theme
+  replace:
+    path: /home/stepmania/.stepmania-5.0/Save/Preferences.ini
+    replace: 'Theme=Simply-Love-SM5'
+    regexp: '^Theme=(.*)'
+
 - name: Add empty ThemePrefs.ini if does not exist
   copy:
-    content: '[Simply Love]\n\n'
+    content: |
+      [Simply Love]
     dest: /home/stepmania/.stepmania-5.0/Save/ThemePrefs.ini
     force: no
     owner: stepmania
@@ -123,12 +132,6 @@
       value: '0.0015'
     - key: AllowScreenSelectProfile
       value: true
-
-- name: Replace all instances of theme
-  replace:
-    path: /home/stepmania/.stepmania-5.0/Save/Preferences.ini
-    replace: 'Theme=Simply-Love-SM5'
-    regexp: '^Theme=(.*)'
 
 - name: Make sure noteskins directory exists
   file:
