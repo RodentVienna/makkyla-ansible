@@ -14,6 +14,9 @@ xset s off
 # hide mouse cursor if not moved
 unclutter -idle 1 -root &
 
+# force vsync off
+export __GL_SYNC_TO_VBLANK=0
+
 pasuspender /stepmania/stepmania
 
 if [[ $? -ne 0 ]]; then
