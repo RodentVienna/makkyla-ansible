@@ -60,14 +60,6 @@
     owner: stepmania
     group: stepmania
 
-- name: Add empty Preferences.ini if does not exist
-  copy:
-    content: "[Options]\r\n\r\n[Game-dance]\r\n\r\n"
-    dest: /home/stepmania/.stepmania-5.0/Save/Preferences.ini
-    force: no
-    owner: stepmania
-    group: stepmania
-
 - name: Set basic preferences
   lineinfile:
     path: /home/stepmania/.stepmania-5.0/Save/Preferences.ini
@@ -81,6 +73,8 @@
       value: alsa-sw
     - key: SoundDevice
       value: hw:CARD=Audio,DEV=0
+    - key: SoundPreferredSampleRate
+      value: '48000'
     - key: LightsDriver
       value: PIUIO_Leds
     - key: Theme
@@ -101,20 +95,14 @@
       value: '0'
     - key: MusicWheelSwitchSpeed
       value: '100'
+    - key: DelayedBack
+      value: '0'
 
 - name: Replace all instances of theme
   replace:
     path: /home/stepmania/.stepmania-5.0/Save/Preferences.ini
     replace: 'Theme=Simply-Love-SM5'
     regexp: '^Theme=(.*)'
-
-- name: Add empty ThemePrefs.ini if does not exist
-  copy:
-    content: "[Simply Love]\r\n\r\n"
-    dest: /home/stepmania/.stepmania-5.0/Save/ThemePrefs.ini
-    force: no
-    owner: stepmania
-    group: stepmania
 
 - name: Set some theme preferences
   lineinfile:
