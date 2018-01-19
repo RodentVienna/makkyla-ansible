@@ -12,8 +12,8 @@ Steps to reproduce:
 2) install with settings as you wish, but use these to make ansible work:
     tick SSH to install
     setup user stepmania
-3) get ansible installed:
-    apt-get install ansible
+3) get ansible and git installed:
+    apt-get install ansible git
     (or using synaptic)
 4) get ansible to import ssh-key and begin automation
     XX
