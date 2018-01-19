@@ -13,15 +13,26 @@ Steps to reproduce:
     tick SSH to install
     setup user stepmania
 3) get ansible installed:
-    mkdir /opt/ansible-git/
-    cd /opt/ansible-git/
-    then work through this tutorial: https://linuxconfig.org/ansible-installation-on-debian-9-stretch-linux-from-source
+    apt-get install ansible
+    (or using synaptic)
 4) get ansible to import ssh-key and begin automation
     XX
 5) XX
     XX
 
 Notes to self:
-1) add ppa in ansible: https://stackoverflow.com/questions/29319752/how-can-i-add-a-ppa-repository-using-ansible
+1) add ppa in ansible, example "brackets": 
+    to roles/utils/tasts/main.yml :
+
+   - name: Add repositories
+     apt_repository: repo='ppa:webupd8team/brackets' state=present update_cache=yes
+	 apt_key: 7B2C3B0889BF5709A105D03AC2518248EEA14886
+
 2) for theme dev additionally install meld (main), brackets (ppa)
+   to roles/utils/tasts/main.yml :
+   
+   - name: Install more utility packages
+		package: meld, brackets
+        
+
 
