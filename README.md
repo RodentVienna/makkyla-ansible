@@ -13,8 +13,15 @@ Steps to reproduce:
     tick SSH to install
     setup user stepmania
 3) get ansible installed:
-    XX
+    mkdir /opt/ansible-git/
+    cd /opt/ansible-git/
+    then work through this tutorial: https://linuxconfig.org/ansible-installation-on-debian-9-stretch-linux-from-source
 4) get ansible to import ssh-key and begin automation
     XX
 5) XX
     XX
+
+Notes to self:
+1) add ppa in ansible: https://stackoverflow.com/questions/29319752/how-can-i-add-a-ppa-repository-using-ansible
+2) for theme dev additionally install meld (main), brackets (ppa)
+
