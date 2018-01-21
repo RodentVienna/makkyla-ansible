@@ -1,5 +1,0 @@
-#######################
-### launch and kill sm5
-#######################
-- name: Launch and kill SM5
-  script: files/launch-kill-sm5.sh
