@@ -1,0 +1,24 @@
+- name: Install LightDM
+  apt:
+    package: lightdm
+
+- name: Install LightDM configuration
+  copy:
+    src: files/custom.conf
+    dest: /usr/share/lightdm/lightdm.conf.d/99_custom.conf
+
+- name: Create nopasswdlogin group
+  group:
+    name: nopasswdlogin
+
+- name: Add stepmania to nopasswdlogin group
+  user:
+    name: stepmania
+    groups: nopasswdlogin
+    append: yes
+
+- name: Enable passwordless login in PAM
+  lineinfile:
+    path: /etc/pam.d/lightdm
+    line: "auth  sufficient  pam_succeed_if.so user ingroup nopasswdlogin"
+    insertafter: "#%PAM-1.0"

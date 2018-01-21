@@ -1,0 +1,196 @@
+## MAIN BUILD
+
+- name: Install Git
+  apt:
+    package: git
+
+- name: Install Stepmania build dependencies
+  apt:
+    package: cmake,build-essential,mesa-common-dev,libglu1-mesa-dev,libglew1.5-dev,libxtst-dev,libxrandr-dev,libpng-dev,libjpeg-dev,zlib1g-dev,libbz2-dev,libogg-dev,libvorbis-dev,libc6-dev,yasm,libasound-dev,libpulse-dev,binutils-dev,libgtk2.0-dev,libmad0-dev,libudev-dev,libva-dev
+
+- name: Fetch Stepmania source
+  git:
+    repo: https://github.com/Kauhsa/stepmania
+    dest: /stepmania
+    version: sync-start
+  register: source
+
+# -DWITH_MINIMAID=OFF required so we don't get a complain about -fPIC,
+# see https://github.com/stepmania/stepmania/issues/1352
+- name: Run CMake
+  shell: CC=/usr/bin/gcc-5 CXX=/usr/bin/g++-5 cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=Release .. -DWITH_MINIMAID=OFF && CC=/usr/bin/gcc-5 CXX=/usr/bin/g++-5 cmake .. -DWITH_MINIMAID=OFF
+  args:
+    chdir: /stepmania/Build
+  when: source.changed
+
+- name: Compile Stepmania
+  shell: make -j$(nproc --all)
+  args:
+    chdir: /stepmania/Build
+  when: source.changed
+
+## THEME AND CONFIGURATION
+
+- name: Make sure theme directory exists
+  file:
+    path: /home/stepmania/.stepmania-5.0/Themes
+    state: directory
+    owner: stepmania
+    group: stepmania
+    recurse: yes
+
+- name: Get Simply Love, McKylä edition
+  git:
+    repo: https://github.com/Kauhsa/Simply-Love-SM5
+    dest: /home/stepmania/.stepmania-5.0/Themes/Simply-Love-SM5
+    version: makkyla
+  become_user: stepmania
+
+- name: Make sure Save directory exists
+  file:
+    path: /home/stepmania/.stepmania-5.0/Save
+    state: directory
+    owner: stepmania
+    group: stepmania
+
+- name: Install Keymaps.ini file
+  copy:
+    src: files/Keymaps.ini
+    dest: /home/stepmania/.stepmania-5.0/Save/Keymaps.ini
+    owner: stepmania
+    group: stepmania
+
+- name: Set basic preferences
+  lineinfile:
+    path: /home/stepmania/.stepmania-5.0/Save/Preferences.ini
+    line: "{{ item.key }}={{ item.value }}\r"
+    insertafter: '\[Options\]'
+    regexp: '^{{ item.key }}'
+  with_items:
+    - key: Windowed
+      value: '0'
+    - key: SoundDrivers
+      value: alsa-sw
+    - key: SoundDevice
+      value: hw:CARD=Audio,DEV=0
+    - key: SoundPreferredSampleRate
+      value: '48000'
+    - key: LightsDriver
+      value: PIUIO_Leds
+    - key: Theme
+      value: 'Simply-Love-SM5'
+    - key: DisplayWidth
+      value: '1920'
+    - key: DisplayHeight
+      value: '1080'
+    - key: DisplayAspectRatio
+      value: '1.777778'
+    - key: ArcadeOptionsNavigation
+      value: '1'
+    - key: OnlyDedicatedMenuButtons
+      value: '1'
+    - key: BGBrightness
+      value: '0.200000'
+    - key: ShowNativeLanguage
+      value: '0'
+    - key: MusicWheelSwitchSpeed
+      value: '100'
+    - key: DelayedBack
+      value: '0'
+
+- name: Replace all instances of theme
+  replace:
+    path: /home/stepmania/.stepmania-5.0/Save/Preferences.ini
+    replace: 'Theme=Simply-Love-SM5'
+    regexp: '^Theme=(.*)'
+
+- name: Set some theme preferences
+  lineinfile:
+    path: /home/stepmania/.stepmania-5.0/Save/ThemePrefs.ini
+    line: "{{ item.key }}={{ item.value }}\r"
+    insertafter: '\[Simply Love\]'
+    regexp: '^{{ item.key }}'
+  with_items:
+    - key: VisualTheme
+      value: Arrows
+    - key: HideStockNoteSkins
+      value: 'true'
+    - key: TimingWindowAdd
+      value: '0.0015'
+    - key: AllowScreenSelectProfile
+      value: 'true'
+
+- name: Make sure noteskins directory exists
+  file:
+    path: /home/stepmania/.stepmania-5.0/NoteSkins/dance
+    state: directory
+    owner: stepmania
+    group: stepmania
+    recurse: yes
+
+- name: Install noteskins
+  synchronize:
+    src: files/noteskins/
+    dest: /home/stepmania/.stepmania-5.0/NoteSkins/dance
+    use_ssh_args: yes
+
+## STARTUP AND DESKTOP ICONS
+
+- name: Install unclutter for hiding cursor
+  apt:
+    package: unclutter
+
+- name: Copy startup script
+  copy:
+    src: files/start.sh
+    dest: /home/stepmania/start-stepmania.sh
+    mode: 0755
+
+- name: Make sure Desktop folder exists
+  file:
+    path: /home/stepmania/Desktop
+    owner: stepmania
+    group: stepmania
+    state: directory
+
+- name: Add Stepmania icon to desktop
+  copy:
+    src: files/stepmania.desktop
+    dest: /home/stepmania/Desktop/stepmania.desktop
+    mode: 0755
+    owner: stepmania
+    group: stepmania
+
+- name: Add link to Songs to Desktop
+  file:
+    src: /home/stepmania/.stepmania-5.0/Songs
+    dest: /home/stepmania/Desktop/Songs
+    state: link
+    force: yes
+
+- name: Add link to Courses to Desktop
+  file:
+    src: /home/stepmania/.stepmania-5.0/Courses
+    dest: /home/stepmania/Desktop/Courses
+    state: link
+    force: yes
+
+- name: Add link to Save to Desktop
+  file:
+    src: /home/stepmania/.stepmania-5.0/Save
+    dest: /home/stepmania/Desktop/Save
+    state: link
+    force: yes
+
+- name: Make sure autostart directory exists
+  file:
+    path: /home/stepmania/.config/autostart
+    state: directory
+    owner: stepmania
+    group: stepmania
+
+#- name: Run Stepmania on startup
+#  file:
+#    src: /home/stepmania/Desktop/stepmania.desktop
+#    dest: /home/stepmania/.config/autostart/stepmania.desktop
+#    state: link

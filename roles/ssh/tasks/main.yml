@@ -1,0 +1,24 @@
+- name: Install sshguard
+  apt:
+    package: sshguard
+
+- name: Add local network to whitelist
+  lineinfile:
+    path: '/etc/sshguard/whitelist'
+#   RodentVienna: review this for generic setup:
+    line: '192.168.0.0/16'
+
+- name: Start and enable sshguard
+  systemd:
+    service: sshguard
+    state: started
+    enabled: yes
+
+- name: Set authorized keys
+  authorized_key:
+    user: stepmania
+    key: '{{ item }}'
+  with_items:
+#    - https://github.com/Kauhsa.keys
+#    - https://github.com/Alhetus.keys
+    - https://github.com/RodentVienna.keys
