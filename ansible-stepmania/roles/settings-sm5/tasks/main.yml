@@ -1,0 +1,66 @@
+######################
+### STEPMANIA SETTINGS
+######################
+
+- name: Set basic preferences
+  lineinfile:
+    destfile: /home/stepmania/.stepmania-5.1/Save/Preferences.ini
+    # path: /home/stepmania/.stepmania-5.1/Save/Preferences.ini
+    line: "{{ item.key }}={{ item.value }}\r"
+    insertafter: '\[Options\]'
+    regexp: '^{{ item.key }}'
+  with_items:
+    - key: Windowed
+      value: '0'
+#    - key: SoundDrivers
+#      value: alsa-sw
+#    - key: SoundDevice
+#      value: hw:CARD=Audio,DEV=0
+#    - key: SoundPreferredSampleRate
+#      value: '48000'
+    - key: LightsDriver
+      value: PIUIO_Leds
+    - key: Theme
+      value: 'Simply-Love-SM5'
+    - key: DisplayWidth
+      value: '1920'
+    - key: DisplayHeight
+      value: '1080'
+    - key: DisplayAspectRatio
+      value: '1.777778'
+    - key: ArcadeOptionsNavigation
+      value: '1'
+    - key: OnlyDedicatedMenuButtons
+      value: '1'
+    - key: BGBrightness
+      value: '0.200000'
+    - key: ShowNativeLanguage
+      value: '0'
+    - key: MusicWheelSwitchSpeed
+      value: '100'
+    - key: DelayedBack
+      value: '0'
+
+- name: Replace all instances of theme
+  replace:
+    destfile: /home/stepmania/.stepmania-5.1/Save/Preferences.ini
+    # path: /home/stepmania/.stepmania-5.1/Save/Preferences.ini
+    replace: 'Theme=Simply-Love-SM5'
+    regexp: '^Theme=(.*)'
+
+- name: Set some theme preferences
+  lineinfile:
+    destfile: /home/stepmania/.stepmania-5.1/Save/ThemePrefs.ini
+    # path: /home/stepmania/.stepmania-5.1/Save/ThemePrefs.ini
+    line: "{{ item.key }}={{ item.value }}\r"
+    insertafter: '\[Simply Love\]'
+    regexp: '^{{ item.key }}'
+  with_items:
+    - key: VisualTheme
+      value: Arrows
+    - key: HideStockNoteSkins
+      value: 'true'
+    - key: TimingWindowAdd
+      value: '0.0015'
+    - key: AllowScreenSelectProfile
+      value: 'true'
