@@ -1,38 +1,37 @@
 # makkyla-ansible
-ITG Vienna - ansible
+HELLO THIS IS ITG VIENNA :)
 
-Testing ansible automation for stepmania based on Kauhsa's project, but edited to be more generic + added scripts for updating stuff (piuio, sm, themes) from github repos.
+Thank you Kauhsa, Rubbinnexx and hanzi for your eternal support!
 
-To Do:
-1) generalize and optionalize
-2) create automation .sh scrips for post-install updates of piuio/sm/themes/other-stuff
+This is ansible automation for stepmania on debian 9, based on Kauhsa's project, but edited to be more generic + added scripts (To DO) for updating stuff (piuio, sm, themes) from github repos.
 
-Steps to reproduce:
-1) download Debian Stable Desktop ISO. In this Case: debian-9.3.0-amd64-xfce-CD-1.iso
-2) install with settings as you wish, but use these to make ansible work:
-    tick SSH to install
-    setup user stepmania
-3) get ansible and git installed:
-    apt-get install ansible git
-    (or using synaptic)
-4) get ansible to import ssh-key and begin automation
-    XX
-5) XX
-    XX
+	Ansible: http://docs.ansible.com/ansible/latest/
+	
+This turned out to be pretty much automatic and straight forward:
 
-Notes to self:
-1) add ppa in ansible, example "brackets": 
-    to roles/utils/tasts/main.yml :
+1) download Debian Stable Desktop ISO. In my Case: debian-9.3.0-amd64-xfce-CD-1.iso
+	--> Get it from: https://www.debian.org/CD/http-ftp/#stable
+	
+2) install with default settings but use this user to make this ansible playbook work:
+	setup user stepmania (no password)
+	setup admin password
 
-   - name: Add repositories
-     apt_repository: repo='ppa:webupd8team/brackets' state=present update_cache=yes
-	 apt_key: 7B2C3B0889BF5709A105D03AC2518248EEA14886
+3) download thsi repo content, and unpack it on your debian installation (i did it in downloads)
 
-2) for theme dev additionally install meld (main), brackets (ppa)
-   to roles/utils/tasts/main.yml :
-   
-   - name: Install more utility packages
-		package: meld, brackets
-        
+4) enter the directory where the install.sh resides, open up a command line and enter
+	sudo ./install.sh
+   you are prompted for the administrator password, which you have set upon debian installation.
+
+5) wait until everything has finished, then reboot for all changes to take place
+
+6) stepmania will now autolaunch at machine boot
+
+7) you may need to setup your sound device and usb profile card paths
+   please refer to stepmania github wiki: https://github.com/stepmania/stepmania/wiki
 
 
+To Do / Ideas:
+
+- automate finding the proper sound driver / sound hw and adding it to stepmania preferences
+- automate the whole USB card setup + mount process
+- update .sh or ansble scripts for updating stepmania and simply love theme in a non-destructive way (e.g. backup each build somewhere)
