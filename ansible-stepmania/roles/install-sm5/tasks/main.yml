@@ -53,6 +53,7 @@
     repo: https://github.com/stepmania/stepmania
     dest: /stepmania
     version: 5_1-new
+    force: yes
   register: source
 
 - name: Removing

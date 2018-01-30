@@ -48,19 +48,19 @@
     replace: 'Theme=Simply-Love-SM5'
     regexp: '^Theme=(.*)'
 
-- name: Set some theme preferences
-  lineinfile:
-    destfile: /home/stepmania/.stepmania-5.1/Save/ThemePrefs.ini
+# - name: Set some theme preferences
+#  lineinfile:
+#    destfile: /home/stepmania/.stepmania-5.1/Save/ThemePrefs.ini
     # path: /home/stepmania/.stepmania-5.1/Save/ThemePrefs.ini
-    line: "{{ item.key }}={{ item.value }}\r"
-    insertafter: '\[Simply Love\]'
-    regexp: '^{{ item.key }}'
-  with_items:
-    - key: VisualTheme
-      value: Arrows
-    - key: HideStockNoteSkins
-      value: 'true'
-    - key: TimingWindowAdd
-      value: '0.0015'
-    - key: AllowScreenSelectProfile
-      value: 'true'
+#    line: "{{ item.key }}={{ item.value }}\r"
+#    insertafter: '\[Simply Love\]'
+#    regexp: '^{{ item.key }}'
+#  with_items:
+#    - key: VisualTheme
+#      value: Arrows
+#    - key: HideStockNoteSkins
+#      value: 'true'
+#    - key: TimingWindowAdd
+#      value: '0.0015'
+#    - key: AllowScreenSelectProfile
+#      value: 'true'
