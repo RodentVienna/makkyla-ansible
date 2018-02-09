@@ -1,7 +1,3 @@
-- name: Add non-free repository
-  apt_repository:
-    repo: deb http://httpredir.debian.org/debian/ stretch main contrib non-free
-
 - name: Blacklist nouveau
   kernel_blacklist:
     name: nouveau
@@ -9,7 +5,8 @@
 
 - name: Install nvidia-driver
   apt:
-    package: nvidia-driver
+    package: nvidia-384
+    # older drivers may be required, e.g.: -375, -366, -361, -352, -346
     update_cache: yes
 
 - name: Make sure X.org configuration directory exists

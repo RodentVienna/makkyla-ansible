@@ -18,10 +18,6 @@
 #      value: hw:CARD=Audio,DEV=0
     - key: SoundPreferredSampleRate
       value: '48000'
-    - key: LightsDriver
-      value: PIUIO_Leds
-    - key: OnlyDedicatedMenuButtons
-      value: '1'
     - key: Theme
       value: 'Simply-Love-SM5'
     - key: DisplayWidth
@@ -52,15 +48,19 @@
     replace: 'Theme=Simply-Love-SM5'
     regexp: '^Theme=(.*)'
 
-# - name: Set more theme preferences
-#  lineinfile:
-#    destfile: /home/stepmania/.stepmania-5.1/Save/ThemePrefs.ini
+- name: Set some theme preferences
+  lineinfile:
+    destfile: /home/stepmania/.stepmania-5.1/Save/ThemePrefs.ini
     # path: /home/stepmania/.stepmania-5.1/Save/ThemePrefs.ini
-#    line: "{{ item.key }}={{ item.value }}\r"
-#    insertafter: '\[Simply Love\]'
-#    regexp: '^{{ item.key }}'
-#  with_items:
-#    - key: VisualTheme
-#      value: Arrows
-#    - key: BGBrightness
-#      value: '0.200000'
+    line: "{{ item.key }}={{ item.value }}\r"
+    insertafter: '\[Simply Love\]'
+    regexp: '^{{ item.key }}'
+  with_items:
+    - key: VisualTheme
+      value: Arrows
+    - key: HideStockNoteSkins
+      value: 'true'
+    - key: TimingWindowAdd
+      value: '0.0015'
+    - key: AllowScreenSelectProfile
+      value: 'true'

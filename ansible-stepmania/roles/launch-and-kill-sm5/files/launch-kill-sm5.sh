@@ -1,6 +1,6 @@
 #!/bin/bash
 
-/stepmania/stepmania &
+/opt/stepmania/stepmania &
 while true; do
     if [ -f "/home/stepmania/.stepmania-5.1/Save/Preferences.ini" ]; then
         sleep 3

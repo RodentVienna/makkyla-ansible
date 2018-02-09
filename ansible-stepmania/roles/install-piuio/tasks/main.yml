@@ -1,0 +1,59 @@
+#################
+### INSTALL PIUIO
+#################
+- set_fact: PIUIO_VERSION=v1.0
+
+- name: Get PIUIO source
+  git:
+    repo: https://github.com/djpohly/piuio
+    dest: /usr/src/piuio-{{ PIUIO_VERSION }}
+    version: "{{ PIUIO_VERSION }}"
+  register: source
+
+- name: Add PIUIO DKMS configuration
+  template:
+    src: files/dkms.conf
+    dest: /usr/src/piuio-{{ PIUIO_VERSION }}/dkms.conf
+  register: config
+
+- name: Remove old PIUIO from DKMS
+  shell: dkms remove -m piuio -v {{ PIUIO_VERSION }} --all || true
+  when: config.changed or source.changed
+
+- name: Add PIUIO to DKMS
+  shell: dkms add -m piuio -v {{ PIUIO_VERSION }}
+  when: config.changed or source.changed
+
+- name: Build and install PIUIO module
+  shell: dkms build -m piuio -v {{ PIUIO_VERSION }} && dkms install -m piuio -v {{PIUIO_VERSION}}
+  when: config.changed or source.changed
+
+- name: Enable kernel module
+  modprobe:
+    name: piuio
+
+- name: Add to list of automatically load kernel modules
+  copy:
+    content: "piuio"
+    dest: /etc/modules-load.d/piuio.conf
+
+# TO DO: variables for choosing among multiple devices.
+- name: Install PIUIO Keymaps.ini file
+  copy:
+    src: files/Keymaps-PIUIO.ini
+    dest: /home/stepmania/.stepmania-5.1/Save/Keymaps.ini
+    owner: stepmania
+    group: stepmania
+
+- name: Set basic preferences
+  lineinfile:
+    destfile: /home/stepmania/.stepmania-5.1/Save/Preferences.ini
+    # path: /home/stepmania/.stepmania-5.1/Save/Preferences.ini
+    line: "{{ item.key }}={{ item.value }}\r"
+    insertafter: '\[Options\]'
+    regexp: '^{{ item.key }}'
+  with_items:
+    - key: LightsDriver
+      value: PIUIO_Leds
+    - key: OnlyDedicatedMenuButtons
+      value: '1'

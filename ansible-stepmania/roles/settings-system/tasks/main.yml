@@ -9,7 +9,8 @@
 
 - name: Enable passwordless sudo for stepmania
   lineinfile:
-    destfile: /etc/sudoers
+    destfile: '/etc/sudoers'
+#    path: '/etc/sudoers'
     line: 'stepmania ALL=(ALL) NOPASSWD:ALL'
     regexp: '^stepmania'
     validate: '/usr/sbin/visudo -cf %s'
@@ -18,17 +19,17 @@
 ####################################
 ### Disable automatic system updates
 ####################################
-- name: Disable apt-daily-service.timer
-  systemd:
-    name: apt-daily-upgrade.timer
-    enabled: no
-    state: stopped
-
-- name: Disable apt-daily.timer
-  systemd:
-    name: apt-daily.timer
-    enabled: no
-    state: stopped
+#- name: Disable apt-daily-service.timer
+#  systemd:
+#    name: apt-daily-upgrade.timer
+#    enabled: no
+#    state: stopped
+#
+#- name: Disable apt-daily.timer
+#  systemd:
+#    name: apt-daily.timer
+#    enabled: no
+#    state: stopped
 
 #####################################
 ### Disable some autostart activities
@@ -85,18 +86,3 @@
 #    path: /etc/pam.d/lightdm
     line: "auth  sufficient  pam_succeed_if.so user ingroup nopasswdlogin"
     insertafter: "#%PAM-1.0"
-
-- name: Make sure user stepmania is in sudo group
-  user:
-    name: stepmania
-    groups: sudo
-    append: yes
-
-- name: Enable passwordless sudo for stepmania
-  lineinfile:
-    destfile: '/etc/sudoers'
-#    path: '/etc/sudoers'
-    line: 'stepmania ALL=(ALL) NOPASSWD:ALL'
-    regexp: '^stepmania'
-    validate: '/usr/sbin/visudo -cf %s'
-    insertbefore: '^root '

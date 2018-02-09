@@ -8,7 +8,7 @@ done
 trap 'pkill unclutter; xset +dpms; xset s on' EXIT
 
 # disable sleeps
-xset -dpms 
+xset -dpms
 xset s off
 
 # hide mouse cursor if not moved
@@ -20,7 +20,7 @@ xrandr --output HDMI-0 --same-as DVI-D-0 --mode 1280x720 --scale-from 1920x1080 
 # force vsync off
 export __GL_SYNC_TO_VBLANK=0
 
-pasuspender /stepmania/stepmania
+pasuspender /opt/stepmania/stepmania
 
 if [[ $? -ne 0 ]]; then
   # wait until enter is pressed

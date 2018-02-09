@@ -3,8 +3,9 @@
   roles:
     - install-packages
     - settings-system
-    - install-nvidia-graphics
+#    - install-nvidia-graphics
     - install-sm5
     - launch-and-kill-sm5
     - settings-sm5
+#    - install-piuio
 #    - cleanup-and-reboot

@@ -1,8 +1,14 @@
 #######################
 ### launch and kill sm5
-
 #######################
   - name: Launch and kill SM5
     script: files/launch-kill-sm5.sh
     become: true
     become_user: stepmania
+
+  - name: Install Simply Love ThemePrefs.ini file
+    copy:
+      src: files/ThemePrefs.ini
+      dest: /home/stepmania/.stepmania-5.1/Save/ThemePrefs.ini
+      owner: stepmania
+      group: stepmania

@@ -1,82 +1,35 @@
-#################
-### INSTALL PIUIO
-#################
-- set_fact: PIUIO_VERSION=v1.0
-
-- name: Install DKMS and other PIUIO build dependencies
-  apt:
-    package: "dkms,git,build-essential,linux-headers-{{ ansible_kernel }}"
-
-- name: Get PIUIO source
-  git:
-    repo: https://github.com/djpohly/piuio
-    dest: /usr/src/piuio-{{ PIUIO_VERSION }}
-    version: "{{ PIUIO_VERSION }}"
-  register: source
-
-- name: Add PIUIO DKMS configuration
-  template:
-    src: files/dkms.conf
-    dest: /usr/src/piuio-{{ PIUIO_VERSION }}/dkms.conf
-  register: config
-
-- name: Remove old PIUIO from DKMS
-  shell: dkms remove -m piuio -v {{ PIUIO_VERSION }} --all || true
-  when: config.changed or source.changed
-
-- name: Add PIUIO to DKMS
-  shell: dkms add -m piuio -v {{ PIUIO_VERSION }}
-  when: config.changed or source.changed
-
-- name: Build and install PIUIO module
-  shell: dkms build -m piuio -v {{ PIUIO_VERSION }} && dkms install -m piuio -v {{PIUIO_VERSION}}
-  when: config.changed or source.changed
-
-- name: Enable kernel module
-  modprobe:
-    name: piuio
-
-- name: Add to list of automatically load kernel modules
-  copy:
-    content: "piuio"
-    dest: /etc/modules-load.d/piuio.conf
-
 #############################################
 ### INSTALL STEPMANIA, THEMES, NOTESKINS, ETC
 #############################################
-- name: Install Stepmania build dependencies
-  apt:
-    package: cmake,build-essential,mesa-common-dev,libglu1-mesa-dev,libglew1.5-dev,libxtst-dev,libxrandr-dev,libpng-dev,libjpeg-dev,zlib1g-dev,libbz2-dev,libogg-dev,libvorbis-dev,libc6-dev,yasm,libasound-dev,libpulse-dev,binutils-dev,libgtk2.0-dev,libmad0-dev,libudev-dev,libva-dev
-
 - name: Fetch Stepmania source
   git:
     repo: https://github.com/stepmania/stepmania
-    dest: /stepmania
+    dest: /opt/stepmania
     version: 5_1-new
     force: yes
   register: source
 
-- name: Removing
-  file:
-    dest: /stepmania/extern/libmmmagic
-    state: absent
-
-- name: Fetch libmmmagic source
-  git:
-    repo: https://github.com/sl1pkn07/libmmmagic
-    dest: /stepmania/extern/libmmmagic
-  register: source
+# - name: Removing
+#   file:
+#     dest: /opt/stepmania/extern/libmmmagic
+#     state: absent
+#
+# - name: Fetch libmmmagic source
+#   git:
+#     repo: https://github.com/sl1pkn07/libmmmagic
+#     dest: /opt/stepmania/extern/libmmmagic
+#   register: source
 
 - name: Run CMake Stepmania
   shell: cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=Release .. && cmake ..
   args:
-    chdir: /stepmania/Build
+    chdir: /opt/stepmania/Build
   when: source.changed
 
 - name: Compile Stepmania
   shell: make -j$(nproc --all)
   args:
-    chdir: /stepmania/Build
+    chdir: /opt/stepmania/Build
   when: source.changed
 
 ##################
@@ -147,9 +100,9 @@
     group: stepmania
 
 # TO DO: variables for choosing among multiple devices.
-- name: Install Keymaps.ini file
+- name: Install Default Keymaps.ini file
   copy:
-    src: files/Keymaps-PIUIO.ini
+    src: files/Keymaps-Default.ini
     dest: /home/stepmania/.stepmania-5.1/Save/Keymaps.ini
     owner: stepmania
     group: stepmania
@@ -157,10 +110,6 @@
 #############################
 ### STARTUP AND DESKTOP ICONS
 #############################
-- name: Install unclutter for hiding cursor
-  apt:
-    package: unclutter
-
 - name: Get localized Desktop path
   shell: xdg-user-dir DESKTOP
   register: desktop_output
@@ -171,6 +120,8 @@
     src: files/start.sh
     dest: /home/stepmania/start-stepmania.sh
     mode: 0755
+    owner: stepmania
+    group: stepmania
 
 - name: Make sure Desktop folder exists
   file:

@@ -2,7 +2,8 @@
 Type=Application
 Version=1.0
 Name=Stepmania
-Path=/stepmania
+Path=/opt/stepmania
 Exec=/home/stepmania/start-stepmania.sh
 Terminal=true
-Icon=/stepmania/icons/hicolor/256x256/apps/stepmania-ssc.png
+#Icon=/opt/stepmania/icons/hicolor/scalable/apps/stepmania-ssc.svg
+Icon=/home/stepmania/.stepmania-5.1/Themes/Simply-Love-SM5/Graphics/Common splash.png
