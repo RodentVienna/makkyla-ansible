@@ -1,0 +1,10 @@
+#############
+### Update Stepmania-Launcher for mountpoint handling
+#############
+- name: Copy startup script with USB handling
+  copy:
+    src: files/start-usb.sh
+    dest: /home/stepmania/start-stepmania.sh
+    mode: 0755
+    owner: stepmania
+    group: stepmania

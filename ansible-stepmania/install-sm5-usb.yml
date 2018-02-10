@@ -1,0 +1,17 @@
+#############################
+### STEPMANIA USB MOUNTPOINTS
+#############################
+- name: Make USB Mountpoints available to Stepmania
+  lineinfile:
+    destfile: /home/stepmania/.stepmania-5.1/Save/Preferences.ini
+    # path: /home/stepmania/.stepmania-5.1/Save/Preferences.ini
+    line: "{{ item.key }}={{ item.value }}\r"
+    insertafter: '\[Options\]'
+    regexp: '^{{ item.key }}'
+  with_items:
+    - key: MemoryCardOsMountPointP1
+      value: '/mnt/stepmania/P1_USB'
+    - key: MemoryCardOsMountPointP2
+      value: '/mnt/stepmania/P2_USB'
+    - key: MemoryCards
+      value: '1'
