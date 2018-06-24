@@ -73,6 +73,5 @@ ansible-playbook -i ansible-stepmania/hosts ansible-stepmania/install-sm5-usb.ym
 echo "file:///mnt/stepmania/P1_USB P1_USB" >> /home/stepmania/.gtk-bookmarks
 echo "file:///mnt/stepmania/P2_USB P2_USB" >> /home/stepmania/.gtk-bookmarks
 
-# no compositor
 # screensaver disable mate
 # MATE autolaunch stepmania

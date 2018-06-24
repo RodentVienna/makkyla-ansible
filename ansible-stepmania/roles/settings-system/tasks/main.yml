@@ -31,9 +31,12 @@
 #    enabled: no
 #    state: stopped
 
-#####################################
-### Disable some autostart activities
-#####################################
+###############################
+### Manage autostart activities
+###############################
+
+# xset -dpms
+
 - name: Make sure .config/autostart folder exists
   file:
     dest: /home/stepmania/.config/autostart
